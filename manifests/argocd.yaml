@@ -1,0 +1,36 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: twingate
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  description: Twingate zero-trust VPN.
+  sourceRepos:
+    - https://github.com/yarsiemanym/twingate.git
+  destinations:
+    - namespace: twingate
+      server: https://kubernetes.default.svc
+  clusterResourceWhitelist:
+  - group: ''
+    kind: Namespace
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: twingate
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: twingate
+  source:
+    repoURL: https://github.com/yarsiemanym/twingate.git
+    targetRevision: HEAD
+    path: manifests
+    directory:
+      exclude: argocd.yaml
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: twingate

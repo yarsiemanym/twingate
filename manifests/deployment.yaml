@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: urban-ibex
+spec:
+  selector:
+    matchLabels:
+      app: urban-ibex
+  template:
+    metadata:
+      labels:
+        app: urban-ibex
+    spec:
+      containers:
+      - name: connector
+        image: twingate/connector:1
+        resources:
+          requests:
+            memory: 128Mi
+            cpu: 200m
+          limits:
+            memory: 256Mi
+            cpu: 500m
+        env:
+          - name: TWINGATE_NETWORK
+            value: saltrelli
+          - name: TWINGATE_ACCESS_TOKEN
+            valueFrom:
+              secretKeyRef:
+                name: twingate
+                key: access-token
+          - name: TWINGATE_REFRESH_TOKEN
+            valueFrom:
+              secretKeyRef:
+                name: twingate
+                key: refresh-token
+          - name: TWINGATE_DNS
+            valueFrom:
+              secretKeyRef:
+                name: twingate
+                key: dns
+          - name: TWINGATE_LABEL_HOSTNAME
+            value: "`hostname`"
+          
