@@ -3,6 +3,7 @@ kind: Deployment
 metadata:
   name: urban-ibex
 spec:
+  replicas: 1
   selector:
     matchLabels:
       app: urban-ibex
